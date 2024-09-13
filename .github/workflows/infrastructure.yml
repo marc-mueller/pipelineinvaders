@@ -34,7 +34,7 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
           region: westeurope
-          template: ./infrastructure/webapp.bicep
+          template: repo/infrastructure/webapp.bicep
           parameters: |
             webAppName=pipelineinvaders
             sku=S1

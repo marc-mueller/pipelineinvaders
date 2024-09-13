@@ -129,10 +129,7 @@ function gameLoop(timestamp: number) {
 
 // Function to draw images with a tint (used for player, enemies, power-ups)
 function drawTintedImage(img: HTMLImageElement, x: number, y: number, width: number, height: number, color: string) {
-    // Draw the original image
     ctx.drawImage(img, x, y, width, height);
-
-    // Apply a tint using a colored rectangle over the image with global composite operation
     ctx.globalCompositeOperation = 'source-atop';
     ctx.fillStyle = color;
     ctx.fillRect(x, y, width, height);
@@ -187,20 +184,18 @@ function updateEnemies() {
                 gameOver();
             }
         } else {
-            // Draw the enemy image based on type with tinting
             const img = enemyImages[enemy.type as keyof typeof enemyImages];
             const color = "#f00"; // Red tint for enemies
             if (img && img.complete) {
                 drawTintedImage(img, enemy.x, enemy.y, enemy.width, enemy.height, color);
             }
         }
-        // Check collision with bullets
         bullets.forEach((bullet, bulletIndex) => {
             if (checkCollision(bullet, enemy)) {
                 enemies.splice(index, 1);
                 bullets.splice(bulletIndex, 1);
                 score += 10;
-                dropPowerUp(enemy.x, enemy.y); // Chance of dropping power-up after enemy is destroyed
+                dropPowerUp(enemy.x, enemy.y);
             }
         });
     });
@@ -214,13 +209,10 @@ function checkCollision(bullet: any, enemy: any): boolean {
 
 // Drop power-ups randomly when an enemy is destroyed
 function dropPowerUp(x: number, y: number) {
-    if (Math.random() < 0.2) { // 20% chance to drop a power-up
+    if (Math.random() < 0.2) {
         const powerUpTypes = ["githubActions", "githubCopilot", "githubAdvancedSecurity", "kubernetes"];
         const randomPowerUp = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
         powerUps.push({ x, y, width: 30, height: 30, type: randomPowerUp });
-
-        // Log when a power-up is dropped for debugging
-        console.log(`Power-up dropped at (${x}, ${y}) of type ${randomPowerUp}`);
     }
 }
 
@@ -231,20 +223,15 @@ function updatePowerUps() {
         if (powerUp.y > canvas.height) {
             powerUps.splice(index, 1);
         } else {
-            // Log position of power-up to debug rendering
-            console.log(`Drawing power-up of type ${powerUp.type} at (${powerUp.x}, ${powerUp.y})`);
-
-            // Draw the power-up image based on type with blue tint
             const img = powerUpImages[powerUp.type as keyof typeof powerUpImages];
             const color = "#00f"; // Blue tint for power-ups
             if (img && img.complete) {
                 drawTintedImage(img, powerUp.x, powerUp.y, powerUp.width, powerUp.height, color);
             }
         }
-        // Check collision with player
         if (checkCollision(player, powerUp)) {
             activatePowerUp(powerUp.type);
-            powerUps.splice(index, 1); // Remove power-up after it's collected
+            powerUps.splice(index, 1);
         }
     });
 }
@@ -253,8 +240,6 @@ function updatePowerUps() {
 function activatePowerUp(type: string) {
     powerUpActive = true;
     powerUpEndTime = Date.now() + powerUpDuration;
-
-    // Cast the type as a valid power-up key
     (powerUpEffects as Record<string, () => void>)[type]();
 }
 
@@ -296,11 +281,10 @@ function updateScoreboard() {
 // Game over function
 function gameOver() {
     isGameOver = true;
-    promptPlayerName(); // Request player name if not provided yet
-    postHighScore(playerName!, score); // Post the score to the API
-
-    fetchHighScores(); // Fetch high scores to display
-    showHighscoreDialog(); // Show the highscore dialog after fetching the scores
+    promptPlayerName();
+    postHighScore(playerName!, score);
+    fetchHighScores();
+    showHighscoreDialog();
     showRestartButton();
 }
 
@@ -309,9 +293,9 @@ function promptPlayerName() {
     if (!playerName) {
         playerName = prompt('Enter your name for the highscore:');
         if (playerName) {
-            localStorage.setItem('playerName', playerName); // Save player name in localStorage
+            localStorage.setItem('playerName', playerName);
         } else {
-            playerName = 'Anonymous'; // Default name if user skips entering a name
+            playerName = 'Anonymous';
         }
     }
 }
@@ -338,9 +322,7 @@ async function fetchHighScores() {
         const response = await fetch('/api/highscore');
         const highScores = await response.json();
         const highscoreList = document.getElementById('highscoreList')!;
-        highscoreList.innerHTML = ''; // Clear previous entries
-
-        // Populate the high scores into the list
+        highscoreList.innerHTML = '';
         highScores.forEach((score: { playerName: string, score: number }) => {
             const li = document.createElement('li');
             li.textContent = `${score.playerName}: ${score.score}`;
@@ -359,7 +341,7 @@ document.getElementById('viewHighscores')?.addEventListener('click', (e) => {
 
 // Function to open the highscore dialog
 function openHighscoreDialog() {
-    fetchHighScores(); // Fetch and display the top 10 scores
+    fetchHighScores();
     document.getElementById('highscoreDialog')!.style.display = 'block';
 }
 
@@ -381,20 +363,11 @@ function closeHighscoreDialog() {
 
 // Extend showRestartButton to display the high scores above the button
 function showRestartButton() {
-    fetchHighScores(); // Fetch the latest high scores
-    if (!restartButton) {
-        restartButton = document.createElement('button');
-        restartButton.textContent = "Restart Game";
-        restartButton.style.position = 'absolute';
-        restartButton.style.top = '60%';
-        restartButton.style.left = '50%';
-        restartButton.style.transform = 'translate(-50%, -50%)';
-        restartButton.style.fontSize = '24px';
-        restartButton.style.padding = '10px 20px';
-        document.body.appendChild(restartButton);
+    fetchHighScores();
+    const restartButton = document.getElementById('restartButton');
+    if (restartButton) {
+        restartButton.style.display = 'block';
     }
-    restartButton.style.display = 'block';
-    restartButton.addEventListener('click', resetGame);
 }
 
 // Reset game logic
@@ -402,24 +375,22 @@ function resetGame() {
     score = 0;
     serverHealth = 100;
     isGameOver = false;
-    bullets.length = 0; // Clear all bullets
-    enemies.length = 0; // Clear all enemies
-    powerUps.length = 0; // Clear all power-ups
-    player.x = canvas.width / 2 - 25; // Reset player position
-    fireRate = 500; // Reset fire rate
-    player.speed = 7; // Reset player speed
-    hideRestartButton(); // Hide restart button
-    closeHighscoreDialog(); // Close the highscore dialog when restarting the game
-    gameLoop(0); // Restart the game loop
+    bullets.length = 0;
+    enemies.length = 0;
+    powerUps.length = 0;
+    player.x = canvas.width / 2 - 25;
+    fireRate = 500;
+    player.speed = 7;
+    hideRestartButton();
+    closeHighscoreDialog();
+    gameLoop(0);
 }
 
-// Add a global restart button
-let restartButton: HTMLButtonElement | null = null;
-
+// Hide restart button
 function hideRestartButton() {
+    const restartButton = document.getElementById('restartButton');
     if (restartButton) {
         restartButton.style.display = 'none';
-        restartButton.removeEventListener('click', resetGame);
     }
 }
 

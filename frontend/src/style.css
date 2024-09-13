@@ -28,7 +28,7 @@ canvas {
 /* Restart Button positioned at the bottom of the canvas */
 #restartButton {
     position: absolute;
-    bottom: 20px;
+    bottom: 140px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 18px;

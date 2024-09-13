@@ -35,10 +35,4 @@ jobs:
           resourceGroupName: ${{ secrets.AZURE_RG }}
           region: westeurope
           template: repo/infrastructure/webapp.bicep
-          parameters: |
-            webAppName=pipelineinvaders
-            sku=S1
-            dockerRegistryUrl=https://ghcr.io
-            dockerRegistryUsername=${{ secrets.PACKAGES_REPOSITORY_OWNER }}
-            dockerRegistryPassword=${{ secrets.PACKAGES_ACCESS_TOKEN }}
-            dockerImage=myrepo/myapp:latest
+          parameters: webAppName=pipelineinvaders sku=S1 dockerRegistryUrl=https://ghcr.io dockerRegistryUsername=${{ secrets.PACKAGES_REPOSITORY_OWNER }} dockerRegistryPassword=${{ secrets.PACKAGES_ACCESS_TOKEN }} dockerImage=myrepo/myapp:latest

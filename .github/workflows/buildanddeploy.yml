@@ -2,15 +2,10 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [main, feature/**]
+    branches: [main]
     paths-ignore:
-      - "Infrastructure/**"
+      - "infrastructure/**"
       - ".github/workflows/infrastructure.yml"
-      - ".github/workflows/buildanddeploy.yml"
-      - ".github/workflows/issuehelpwanted.yml"
-      - ".github/workflows/stale.yml"
-      - ".github/workflows/multienvbuildanddeploy_reusableworkflow.yml"
-      - ".github/workflows/multienvbuildanddeploy.yml"
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches: [main]

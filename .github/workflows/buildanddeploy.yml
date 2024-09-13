@@ -29,6 +29,8 @@ jobs:
       - uses: actions/checkout@master
       - uses: ./.github/actions/buildcontainerwebapp
         with:
+          registryUsername: ${{ github.actor }}
+          registryPassword: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ env.REPOSITORY }}
           tag: ${{ github.sha }}
       

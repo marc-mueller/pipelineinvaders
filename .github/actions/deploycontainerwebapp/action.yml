@@ -44,6 +44,7 @@ runs:
       if: ${{ inputs.createSlot == 'true'  }}
 
     - name: Lowercase the repo name
+      shell: bash
       run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}        
 
     - name: 'Run Azure webapp deploy action non-production'

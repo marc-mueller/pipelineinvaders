@@ -1,0 +1,41 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build-backend",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+          "build",
+          "${workspaceFolder}/backend/backend.csproj"
+        ],
+        "problemMatcher": "$msCompile",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      },
+      {
+        "label": "build-frontend",
+        "type": "npm",
+        "script": "build",
+        "group": "build",
+        "presentation": {
+          "reveal": "always",
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "npm install",
+        "type": "npm",
+        "script": "install",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": []
+      }
+    ]
+  }
+  

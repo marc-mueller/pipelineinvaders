@@ -1,0 +1,16 @@
+{
+  "name": "pipeline-invaders",
+  "version": "1.0.0",
+  "description": "Pipeline Invaders game using TypeScript and HTML5 Canvas",
+  "scripts": {
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "cpy src/**/*.{html,css,svg} dist/ --parents",
+    "start": "http-server ./dist -p 5500",
+    "copy-to-backend": "cpy dist/**/* ../backend/wwwroot/ --parents"
+  },
+  "devDependencies": {
+    "cpy-cli": "^5.0.0",
+    "http-server": "^14.1.1",
+    "typescript": "^5.5.4"
+  }
+}

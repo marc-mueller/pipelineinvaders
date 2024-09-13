@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch ASP.NET Core (Kestrel)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-backend",
+      "program": "${workspaceFolder}/backend/bin/Debug/net8.0/backend.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/backend",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      },
+      "launchBrowser": {
+        "enabled": true,
+        "args": "${auto-detect-url}",
+        "windows": {
+          "command": "cmd.exe",
+          "args": "/C start ${auto-detect-url}"
+        },
+        "osx": {
+          "command": "open"
+        },
+        "linux": {
+          "command": "xdg-open"
+        }
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      },
+      "justMyCode": true
+    },
+    {
+      "name": "Launch Frontend (TypeScript)",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "build-frontend",
+      "program": "${workspaceFolder}/frontend/dist/app.js", // Adjust if your entry point changes
+      "cwd": "${workspaceFolder}/frontend",
+      "outFiles": ["${workspaceFolder}/frontend/dist/**/*.js"],
+      "restart": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}

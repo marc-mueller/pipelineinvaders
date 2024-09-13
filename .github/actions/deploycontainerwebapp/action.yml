@@ -1,0 +1,86 @@
+name: 'Deploy Container Web App'
+description: 'Deploys a web app with our standard steps'
+inputs:
+  repository:
+    description: "The repository name"
+    required: true
+  tag:
+    description: "The tag of the image to build"
+    required: true
+  webappname:
+    description: "The webapp name"
+    required: true
+  slotname:
+    description: "The slot name"
+    required: true
+  environmentname:
+    description: "The GitHub environment name"
+    required: true
+  createSlot:
+    description: "Should a slot be created?"
+    default: "false"
+  azureCredentials:
+    description: "Azure credetials"
+    required: true
+  azureResourceGroup:
+    description: "Target azure resource group"
+    required: true
+outputs:
+  webAppUrl:
+    description: "The url of the deployed webapp"
+    value: ${{ steps.get-webapp-url.outputs.webAppUrl }}
+runs:
+  using: "composite"
+  steps:
+    - name: Login for az cli commands 
+      uses: azure/login@v1
+      with:
+        creds: ${{ inputs.azureCredentials }}
+
+    - name: Create Pull-Request slot
+      shell: pwsh
+      run: |
+        az webapp deployment slot create --resource-group ${{ inputs.azureResourceGroup }} --name ${{ inputs.webappname }}-webapp --slot ${{ inputs.slotname }}
+      if: ${{ inputs.createSlot == 'true'  }}
+
+    - name: Lowercase the repo name
+      shell: bash
+      run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}        
+
+    - name: 'Run Azure webapp deploy action non-production'
+      uses: azure/webapps-deploy@v3
+      with: 
+        app-name: ${{ inputs.webappname }}-webapp 
+        images: 'ghcr.io/${{ inputs.repository }}:${{ inputs.tag }}'
+        slot-name: ${{ inputs.slotname }}
+      if: ${{ inputs.slotname != 'production' }}
+
+    - name: 'Run Azure webapp deploy action production'
+      uses: azure/webapps-deploy@v3
+      with: 
+        app-name: ${{ inputs.webappname }}-webapp 
+        images: 'ghcr.io/${{ inputs.repository }}:${{ inputs.tag }}'
+        slot-name: staging
+      if: ${{ inputs.slotname == 'production' }}
+
+    - name: Swap to production slot
+      shell: pwsh
+      run: |
+        az webapp deployment slot swap --resource-group ${{ inputs.azureResourceGroup }} --name ${{ inputs.webappname }}-webapp --slot staging --target-slot production
+      if: ${{ inputs.slotname == 'production' }}
+    
+    - name: Get web app URL
+      id: get-webapp-url
+      shell: pwsh
+      run: |
+        $webAppUrl = ''
+        if('${{ inputs.slotname }}' -eq 'production')
+        {
+          $webAppUrl = az webapp show --resource-group ${{ inputs.azureResourceGroup }} --name  ${{ inputs.webappname }}-webapp --query hostNames[0] -o tsv
+        }
+        else
+        {
+          $webAppUrl = az webapp deployment slot list --resource-group ${{ inputs.azureResourceGroup }} --name ${{ inputs.webappname }}-webapp --query "[?name=='${{ inputs.slotname }}'].{hostNames:hostNames[0]}" -o tsv
+        }
+        Write-Output "The webapp URL is https://$($webAppUrl)"
+        Write-Output "webAppUrl=https://$($webAppUrl)" >> $env:GITHUB_OUTPUT

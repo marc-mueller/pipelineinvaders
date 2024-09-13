@@ -1,4 +1,4 @@
-# Pipeline Invaders: README
+# Pipeline Invaders
 
 ## Game Concept
 

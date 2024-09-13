@@ -88,7 +88,9 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }} 
     
     - if: matrix.build-mode == 'manual' && matrix.language == 'csharp'
-      run: dotnet build ${{ github.workspace }}/backend/backend.csproj --configuration Release
+      run: |
+        npm install --prefix frontend
+        dotnet build ${{ github.workspace }}/backend/backend.csproj --configuration Release
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

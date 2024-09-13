@@ -6,7 +6,11 @@
 
 version: 2
 updates:
- - package-ecosystem: "devcontainers"
-   directory: "/"
-   schedule:
-     interval: weekly
+  - package-ecosystem: "devcontainers"
+    directory: "/"
+    schedule:
+      interval: weekly
+  - package-ecosystem: "nuget" # See documentation for possible values
+    directory: "/backend" # Location of package manifests
+    schedule:
+      interval: "daily"

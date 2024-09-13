@@ -399,4 +399,4 @@ FodyWeavers.xsd
 
 dist/
 node_modules/
-wwwroot/*
+backend/wwwroot/*

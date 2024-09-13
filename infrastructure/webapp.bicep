@@ -19,7 +19,7 @@ param dockerRegistryUsername string
 param dockerRegistryPassword string
 
 @description('Docker image tag (e.g. myrepo/myapp:latest)')
-param dockerImage string
+param dockerImage string = 'nginx:latest'
 
 var webAppPortalName = '${webAppName}-webapp'
 var appServicePlanName = 'AppServicePlan-${webAppName}'

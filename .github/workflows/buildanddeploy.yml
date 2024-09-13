@@ -18,7 +18,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: pipelineinvaders
-  REPOSITORY: pipelineinvaders
+  REPOSITORY: marc-mueller/pipelineinvaders
 
 jobs:
   build:

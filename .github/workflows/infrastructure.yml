@@ -3,7 +3,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "Infrastructure/**"
+      - "infrastructure/**"
       - ".github/workflows/infrastructure.yml"
   pull_request:
     branches: [main]
@@ -34,7 +34,7 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
           resourceGroupName: ${{ secrets.AZURE_RG }}
           region: westeurope
-          template: repo/Infrastructure/webapp.bicep
+          template: repo/infrastructure/webapp.bicep
           parameters: |
             webAppName=pipelineinvaders
             sku=S1

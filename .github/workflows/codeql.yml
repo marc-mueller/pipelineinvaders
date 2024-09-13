@@ -19,6 +19,9 @@ on:
   schedule:
     - cron: '42 8 * * 3'
 
+env:
+  DOTNET_VERSION: '8.0.x'
+
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
@@ -46,7 +49,7 @@ jobs:
           - language: javascript-typescript
             build-mode: none
           - language: csharp
-            build-mode: autobuild
+            build-mode: manual
         # CodeQL supports the following values keywords for 'language': 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift'
         # Use `c-cpp` to analyze code written in C, C++ or both
         # Use 'java-kotlin' to analyze code written in Java, Kotlin or both
@@ -78,15 +81,14 @@ jobs:
     # to build your code.
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-    - if: matrix.build-mode == 'manual'
-      shell: bash
-      run: |
-        echo 'If you are using a "manual" build mode for one or more of the' \
-          'languages you are analyzing, replace this with the commands to build' \
-          'your code, for example:'
-        echo '  make bootstrap'
-        echo '  make release'
-        exit 1
+    - if: matrix.build-mode == 'manual' && matrix.language == 'csharp'
+      name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }} 
+    
+    - if: matrix.build-mode == 'manual' && matrix.language == 'csharp'
+      run: dotnet build ${{ github.workspace }}/backend/backend.csproj --configuration Release
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

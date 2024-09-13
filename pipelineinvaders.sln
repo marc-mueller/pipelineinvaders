@@ -5,6 +5,33 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "backend", "backend\backend.csproj", "{1D310DAB-C298-461D-B5DC-1161F93760E6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{62237454-A5C5-45FB-AB99-CA33A3EEFE0F}"
+	ProjectSection(SolutionItems) = preProject
+		frontend\package-lock.json = frontend\package-lock.json
+		frontend\package.json = frontend\package.json
+		frontend\tsconfig.json = frontend\tsconfig.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{72CA76A7-B196-4427-B4ED-8771157B1DCD}"
+	ProjectSection(SolutionItems) = preProject
+		frontend\src\index.html = frontend\src\index.html
+		frontend\src\pipeline-invaders.ts = frontend\src\pipeline-invaders.ts
+		frontend\src\release-runner.ts = frontend\src\release-runner.ts
+		frontend\src\style.css = frontend\src\style.css
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{16E58996-4BA5-4E6E-8DF5-AD9CC84322DC}"
+	ProjectSection(SolutionItems) = preProject
+		frontend\src\img\bug.svg = frontend\src\img\bug.svg
+		frontend\src\img\githubactions.svg = frontend\src\img\githubactions.svg
+		frontend\src\img\githubadvancedsecurity.svg = frontend\src\img\githubadvancedsecurity.svg
+		frontend\src\img\githubcopilot.svg = frontend\src\img\githubcopilot.svg
+		frontend\src\img\kubernetes.svg = frontend\src\img\kubernetes.svg
+		frontend\src\img\misconfiguration.svg = frontend\src\img\misconfiguration.svg
+		frontend\src\img\player.svg = frontend\src\img\player.svg
+		frontend\src\img\vulnerability.svg = frontend\src\img\vulnerability.svg
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +45,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{72CA76A7-B196-4427-B4ED-8771157B1DCD} = {62237454-A5C5-45FB-AB99-CA33A3EEFE0F}
+		{16E58996-4BA5-4E6E-8DF5-AD9CC84322DC} = {72CA76A7-B196-4427-B4ED-8771157B1DCD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {18B09C05-1796-4F23-8219-0E071453BCE7}

@@ -1,0 +1,44 @@
+name: Create Azure Resources
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "Infrastructure/**"
+      - ".github/workflows/infrastructure.yml"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: 4thelloworlddemo
+
+jobs:
+  deploy-infrastructure:
+    runs-on: ubuntu-latest
+    name: Deploy Azure Infrastructure
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: repo
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy Bicep
+        uses: azure/arm-deploy@v1
+        with:
+          scope: resourcegroup
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          resourceGroupName: ${{ secrets.AZURE_RG }}
+          region: westeurope
+          template: repo/Infrastructure/webapp.bicep
+          parameters: |
+            webAppName=pipelineinvaders
+            sku=S1
+            dockerRegistryUrl=https://ghcr.io
+            dockerRegistryUsername=${{ secrets.PACKAGES_REPOSITORY_OWNER }}
+            dockerRegistryPassword=${{ secrets.PACKAGES_ACCESS_TOKEN }}
+            dockerImage=myrepo/myapp:latest

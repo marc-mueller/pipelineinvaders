@@ -1,0 +1,112 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main, feature/**]
+    paths-ignore:
+      - "Infrastructure/**"
+      - ".github/workflows/infrastructure.yml"
+      - ".github/workflows/buildanddeploy.yml"
+      - ".github/workflows/issuehelpwanted.yml"
+      - ".github/workflows/stale.yml"
+      - ".github/workflows/multienvbuildanddeploy_reusableworkflow.yml"
+      - ".github/workflows/multienvbuildanddeploy.yml"
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: pipelineinvaders
+  REPOSITORY: pipelineinvaders
+
+jobs:
+  build:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Build the web app
+    steps:
+      - uses: actions/checkout@master
+      - uses: ./.github/actions/buildcontainerwebapp
+        with:
+          repository: ${{ env.REPOSITORY }}
+          tag: ${{ github.sha }}
+      
+  deploy-pr:
+    runs-on: ubuntu-latest
+    name: Deploy to PR Slot
+    needs: [build]
+    if: github.event_name == 'pull_request'
+    environment: 
+      name: pull-request
+      url:  ${{ steps.deploywebapp.webAppUrl }}
+    steps:
+      - uses: actions/checkout@master # only needed because action is in same repo
+      - uses: ./.github/actions/deploycontainerwebapp
+        with:
+          repository: ${{ env.REPOSITORY }}
+          tag: ${{ github.sha }}
+          webappname: ${{ env.AZURE_WEBAPP_NAME }}
+          slotname: pr-${{github.event.number}}
+          environmentname: 'pull-request'
+          createSlot: true
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          azureResourceGroup: ${{ secrets.AZURE_RG }}
+        id: deploywebapp
+
+  deploy-testing:
+    runs-on: ubuntu-latest
+    name: Deploy to testing slot
+    needs: [build]
+    if: github.event_name != 'pull_request'
+    environment: 
+      name: testing
+      url:  ${{ steps.deploywebapp.outputs.webAppUrl }}
+    steps:
+      - uses: actions/checkout@master # only needed because action is in same repo
+      - uses: ./.github/actions/deploycontainerwebapp
+        with:
+          repository: ${{ env.REPOSITORY }}
+          tag: ${{ github.sha }}
+          webappname: ${{ env.AZURE_WEBAPP_NAME }}
+          slotname: 'testing'
+          environmentname: 'testing'
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          azureResourceGroup: ${{ secrets.AZURE_RG }}
+        id: deploywebapp
+          
+  deploy-production:
+    runs-on: ubuntu-latest
+    name: Deploy to production
+    needs: [deploy-testing]
+    environment: 
+      name: production
+      url:  ${{ steps.deploywebapp.outputs.webAppUrl }}
+    steps:
+      - uses: actions/checkout@master # only needed because action is in same repo
+      - uses: ./.github/actions/deploycontainerwebapp
+        with:
+          repository: ${{ env.REPOSITORY }}
+          tag: ${{ github.sha }}
+          webappname: ${{ env.AZURE_WEBAPP_NAME }}
+          slotname: 'production'
+          environmentname: 'production'
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          azureResourceGroup: ${{ secrets.AZURE_RG }}
+        id: deploywebapp
+          
+  cleanup-pull-request:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Cleanup pull request
+    steps:
+      - name: Login for az cli commands 
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Delete Pull-Request slot
+        shell: pwsh
+        run: |
+          az webapp deployment slot delete --resource-group ${{ secrets.AZURE_RG }} --name ${{ env.AZURE_WEBAPP_NAME }}-webapp --slot pr-${{github.event.number}}
+          

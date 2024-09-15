@@ -13,7 +13,7 @@
     },
   
     // Forward necessary ports for ASP.NET and Node.js development
-    "forwardPorts": [5500, 5000, 5001],
+    "forwardPorts": [5000, 5001],
   
     // Run these commands after the container is created
     "postCreateCommand": "npm install && dotnet restore",

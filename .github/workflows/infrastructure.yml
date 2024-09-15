@@ -6,7 +6,10 @@ on:
       - "infrastructure/**"
       - ".github/workflows/infrastructure.yml"
   pull_request:
-    branches: [main]
+    branches: [ main ]
+    paths:
+      - "infrastructure/**"
+      - ".github/workflows/infrastructure.yml"
   workflow_dispatch:
 
 env:

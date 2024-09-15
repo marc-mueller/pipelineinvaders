@@ -240,7 +240,7 @@ function updatePowerUps() {
 function activatePowerUp(type: string) {
     powerUpActive = true;
     powerUpEndTime = Date.now() + powerUpDuration;
-    (powerUpEffects as Record<string, () => void>)[type]();
+    eval(`(${(powerUpEffects as Record<string, () => void>)[type]})()`);
 }
 
 // Reset power-up effects
@@ -261,7 +261,7 @@ function autoShoot() {
 // Display power-up messages
 function displayMessage(message: string) {
     const msgDiv = document.createElement('div');
-    msgDiv.textContent = message;
+    msgDiv.innerHTML = message; // Potential XSS if `message` contains malicious code
     msgDiv.style.position = 'absolute';
     msgDiv.style.top = '10px';
     msgDiv.style.left = '50%';

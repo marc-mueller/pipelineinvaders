@@ -8,6 +8,9 @@
     "start": "http-server ./dist -p 5500",
     "copy-to-backend": "cpy \"dist/**/*\" ../backend/wwwroot/"
   },
+  "dependencies": {
+    "lodash": "4.17.20"
+  },
   "devDependencies": {
     "cpy-cli": "^5.0.0",
     "http-server": "^14.1.1",

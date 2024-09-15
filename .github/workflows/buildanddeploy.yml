@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build the web app
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/buildcontainerwebapp
         with:
           registryUsername: ${{ github.actor }}
@@ -43,12 +43,12 @@ jobs:
           docker cp $TEST_CONTAINER_ID:/testresults/xunit ./xunit-test-results
           docker rm $TEST_CONTAINER_ID
       - name: Publish Jest test results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jest-test-results
           path: ./jest-test-results
       - name: Publish xUnit test results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: xunit-test-results
           path: ./xunit-test-results
@@ -62,7 +62,7 @@ jobs:
       name: pull-request
       url:  ${{ steps.deploywebapp.webAppUrl }}
     steps:
-      - uses: actions/checkout@master # only needed because action is in same repo
+      - uses: actions/checkout@v4 # only needed because action is in same repo
       - uses: ./.github/actions/deploycontainerwebapp
         with:
           repository: ${{ env.REPOSITORY }}
@@ -84,7 +84,7 @@ jobs:
       name: testing
       url:  ${{ steps.deploywebapp.outputs.webAppUrl }}
     steps:
-      - uses: actions/checkout@master # only needed because action is in same repo
+      - uses: actions/checkout@v4 # only needed because action is in same repo
       - uses: ./.github/actions/deploycontainerwebapp
         with:
           repository: ${{ env.REPOSITORY }}
@@ -104,7 +104,7 @@ jobs:
       name: production
       url:  ${{ steps.deploywebapp.outputs.webAppUrl }}
     steps:
-      - uses: actions/checkout@master # only needed because action is in same repo
+      - uses: actions/checkout@v4 # only needed because action is in same repo
       - uses: ./.github/actions/deploycontainerwebapp
         with:
           repository: ${{ env.REPOSITORY }}

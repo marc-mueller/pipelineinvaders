@@ -38,12 +38,22 @@ runs:
     - name: Build and push container image to registry
       uses: docker/build-push-action@v4
       with:
+        push: false
+        tags: ghcr.io/${{ inputs.repository }}:${{ inputs.tag }}
+        file: ./backend/Dockerfile
+        context: .
+        build-args: BUILDID=${{ github.run_id }}-${{ github.run_attempt }}
+        target: test
+
+    - name: Build and push container image to registry
+      uses: docker/build-push-action@v4
+      with:
         push: true
         tags: ghcr.io/${{ inputs.repository }}:${{ inputs.tag }}
         file: ./backend/Dockerfile
         context: .
         build-args: BUILDID=${{ github.run_id }}-${{ github.run_attempt }}
-        
+        target: final        
 
     - name: Extract test results
       shell: pwsh

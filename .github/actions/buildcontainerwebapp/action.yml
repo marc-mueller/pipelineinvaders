@@ -39,7 +39,7 @@ runs:
       uses: docker/build-push-action@v4
       with:
         push: false
-        tags: ghcr.io/${{ inputs.repository }}:${{ inputs.tag }}
+        tags: ghcr.io/${{ inputs.repository }}:${{ inputs.tag }}-testresults
         file: ./backend/Dockerfile
         context: .
         build-args: BUILDID=${{ github.run_id }}-${{ github.run_attempt }}
@@ -47,8 +47,9 @@ runs:
     - name: Extract test results
       shell: pwsh
       run: |
-        $id=docker images --filter "label=testresults=${{ github.run_id }}-${{ github.run_attempt }}" -q | Select-Object -First 1
-        docker create --name testcontainer $id
+        #$id=docker images --filter "label=testresults=${{ github.run_id }}-${{ github.run_attempt }}" -q | Select-Object -First 1
+        #docker create --name testcontainer $id
+        docker create --name testcontainer ghcr.io/${{ inputs.repository }}:${{ inputs.tag }}-testresults
         docker cp testcontainer:/testresults/xunit ./xunit-test-results
         docker cp testcontainer:/testresults/jest ./jest-test-results
         docker rm testcontainer

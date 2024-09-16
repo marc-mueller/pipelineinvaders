@@ -1,7 +1,14 @@
 import { jest } from '@jest/globals';
 
 // Set up the DOM with a canvas element before importing the module
-document.body.innerHTML = '<canvas id="gameCanvas" width="800" height="600"></canvas>';
+document.body.innerHTML = `
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="score"></div>
+    <div id="serverHealth"></div>
+    <div id="highscoreDialog" style="display: none;"></div>
+    <button id="restartButton" style="display: none;"></button>
+    <ul id="highscoreList"></ul>
+`;
 
 // Mocking the canvas context only in the test environment
 let originalGetContext: typeof HTMLCanvasElement.prototype.getContext;
@@ -22,44 +29,49 @@ afterAll(() => {
     HTMLCanvasElement.prototype.getContext = originalGetContext;
 });
 
+// Mock window.prompt and fetch with correct types
+beforeAll(() => {
+    global.prompt = jest.fn() as jest.Mock<(message?: string, _default?: string) => string | null>;
+    global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>; // Correctly mock global.fetch
+});
+
 import {
-  score,
-  serverHealth,
-  isGameOver,
-  fireRate,
-  player,
-  bullets,
-  enemies,
-  powerUps,
-  gameLoop,
-  shoot,
-  updateBullets,
-  generateEnemies,
-  updateEnemies,
-  checkCollision,
-  dropPowerUp,
-  updatePowerUps,
-  activatePowerUp,
-  resetPowerUp,
-  autoShoot,
-  displayMessage,
-  updateScoreboard,
-  gameOver,
-  promptPlayerName,
-  postHighScore,
-  fetchHighScores,
-  openHighscoreDialog,
-  showHighscoreDialog,
-  closeHighscoreDialog,
-  showRestartButton,
-  resetGame,
-  hideRestartButton,
-  playerName, // Import playerName correctly
-  // Importing the new setter functions
-  setScore,
-  setServerHealth,
-  setIsGameOver,
-  setFireRate,
+    score,
+    serverHealth,
+    isGameOver,
+    fireRate,
+    player,
+    bullets,
+    enemies,
+    powerUps,
+    gameLoop,
+    shoot,
+    updateBullets,
+    generateEnemies,
+    updateEnemies,
+    checkCollision,
+    dropPowerUp,
+    updatePowerUps,
+    activatePowerUp,
+    resetPowerUp,
+    autoShoot,
+    displayMessage,
+    updateScoreboard,
+    gameOver,
+    promptPlayerName,
+    postHighScore,
+    fetchHighScores,
+    openHighscoreDialog,
+    showHighscoreDialog,
+    closeHighscoreDialog,
+    showRestartButton,
+    resetGame,
+    hideRestartButton,
+    playerName,
+    setScore,
+    setServerHealth,
+    setIsGameOver,
+    setFireRate,
 } from '../pipeline-invaders';
 
 describe('Pipeline Invaders', () => {
@@ -157,11 +169,8 @@ describe('Pipeline Invaders', () => {
     });
 
     test('should update scoreboard', () => {
-        const scoreElement = document.createElement('div');
-        const serverHealthElement = document.createElement('div');
-        scoreElement.id = 'score';
-        serverHealthElement.id = 'serverHealth';
-        document.body.append(scoreElement, serverHealthElement);
+        const scoreElement = document.getElementById('score')!;
+        const serverHealthElement = document.getElementById('serverHealth')!;
         
         setScore(100);
         setServerHealth(80);
@@ -184,6 +193,8 @@ describe('Pipeline Invaders', () => {
         promptSpy.mockRestore();
     });
 
+    // Uncomment the following tests if you have the backend set up for fetching and posting high scores.
+
     // test('should post high score to API', async () => {
     //     const mockFetch = jest.fn().mockResolvedValue({
     //         ok: true,
@@ -199,43 +210,33 @@ describe('Pipeline Invaders', () => {
     //         json: async () => [{ playerName: 'Test Player', score: 100 }]
     //     } as Response) as jest.MockedFunction<typeof fetch>;
     //     global.fetch = mockFetch;
-    //     const highscoreList = document.createElement('ul');
-    //     highscoreList.id = 'highscoreList';
-    //     document.body.append(highscoreList);
+    //     const highscoreList = document.getElementById('highscoreList')!;
 
     //     await fetchHighScores();
     //     expect(highscoreList.children.length).toBeGreaterThan(0);
     // });
 
     test('should open highscore dialog', () => {
-        const dialog = document.createElement('div');
-        dialog.id = 'highscoreDialog';
-        document.body.append(dialog);
         openHighscoreDialog();
+        const dialog = document.getElementById('highscoreDialog')!;
         expect(dialog.style.display).toBe('block');
     });
 
     test('should show highscore dialog after game over', () => {
-        const dialog = document.createElement('div');
-        dialog.id = 'highscoreDialog';
-        document.body.append(dialog);
         showHighscoreDialog();
+        const dialog = document.getElementById('highscoreDialog')!;
         expect(dialog.style.display).toBe('block');
     });
 
     test('should close highscore dialog', () => {
-        const dialog = document.createElement('div');
-        dialog.id = 'highscoreDialog';
-        document.body.append(dialog);
         closeHighscoreDialog();
+        const dialog = document.getElementById('highscoreDialog')!;
         expect(dialog.style.display).toBe('none');
     });
 
     test('should show restart button after game over', () => {
-        const button = document.createElement('button');
-        button.id = 'restartButton';
-        document.body.append(button);
         showRestartButton();
+        const button = document.getElementById('restartButton')!;
         expect(button.style.display).toBe('block');
     });
 
@@ -247,10 +248,8 @@ describe('Pipeline Invaders', () => {
     });
 
     test('should hide restart button after game reset', () => {
-        const button = document.createElement('button');
-        button.id = 'restartButton';
-        document.body.append(button);
         hideRestartButton();
+        const button = document.getElementById('restartButton')!;
         expect(button.style.display).toBe('none');
     });
 });

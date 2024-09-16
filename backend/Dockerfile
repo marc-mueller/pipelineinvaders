@@ -11,7 +11,9 @@ ARG BUILD_CONFIGURATION=Release
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs
 WORKDIR /src
 COPY ["backend/backend.csproj", "backend/"]
+COPY ["backend.Tests/backend.Tests.csproj", "backend.Tests/"]
 RUN dotnet restore "./backend/backend.csproj"
+RUN dotnet restore "./backend.Tests/backend.Tests.csproj"
 COPY ["frontend/package.json", "frontend/"]
 WORKDIR /src/frontend
 RUN npm install
@@ -29,12 +31,11 @@ RUN npm test
 
 # Run xUnit tests
 WORKDIR /src
-RUN dotnet test "./backend.Tests/backend.Tests.csproj" --logger:trx --results-directory /testresults --logger "trx;LogFileName=test_results.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=json%2cCobertura /p:CoverletOutput=/testresults/coverage/ -p:MergeWith=/testresults/coverage/coverage.json
+RUN dotnet test "./backend.Tests/backend.Tests.csproj" --logger:trx --results-directory /testresults/xunit --logger "trx;LogFileName=test_results.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=json%2cCobertura /p:CoverletOutput=/testresults/coverage/ -p:MergeWith=/testresults/coverage/coverage.json
 
 # Copy test results to a specific directory
-RUN mkdir -p /testresults/jest /testresults/xunit
+RUN mkdir -p /testresults/jest
 RUN cp -r /src/frontend/coverage /testresults/jest
-RUN cp -r /testresults /testresults/xunit
 
 FROM test AS publish
 ARG BUILD_CONFIGURATION=Release

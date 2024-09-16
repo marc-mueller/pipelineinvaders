@@ -35,7 +35,7 @@ runs:
       shell: bash
       run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
 
-    - name: Build and push container image to registry
+    - name: Build container test target
       uses: docker/build-push-action@v4
       with:
         push: false
@@ -44,17 +44,6 @@ runs:
         context: .
         build-args: BUILDID=${{ github.run_id }}-${{ github.run_attempt }}
         target: test
-
-    - name: Build and push container image to registry
-      uses: docker/build-push-action@v4
-      with:
-        push: true
-        tags: ghcr.io/${{ inputs.repository }}:${{ inputs.tag }}
-        file: ./backend/Dockerfile
-        context: .
-        build-args: BUILDID=${{ github.run_id }}-${{ github.run_attempt }}
-        target: final        
-
     - name: Extract test results
       shell: pwsh
       run: |
@@ -73,3 +62,15 @@ runs:
       with:
         name: xunit-test-results
         path: ./xunit-test-results
+
+    - name: Build and push container image to registry
+      uses: docker/build-push-action@v4
+      with:
+        push: true
+        tags: ghcr.io/${{ inputs.repository }}:${{ inputs.tag }}
+        file: ./backend/Dockerfile
+        context: .
+        build-args: BUILDID=${{ github.run_id }}-${{ github.run_attempt }}
+        target: final        
+
+    

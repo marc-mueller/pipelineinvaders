@@ -42,19 +42,17 @@ runs:
         tags: ghcr.io/${{ inputs.repository }}:${{ inputs.tag }}
         file: ./backend/Dockerfile
         context: .
+        build-args: BUILDID=${{ github.run_id }}-${{ github.run_attempt }}
+        
 
-    - name: Extract Jest test results
-      shell: bash
+    - name: Extract test results
+      shell: pwsh
       run: |
-        TEST_CONTAINER_ID=$(docker create ${{ env.REPOSITORY }}:${{ github.sha }})
-        docker cp $TEST_CONTAINER_ID:/testresults/jest ./jest-test-results
-        docker rm $TEST_CONTAINER_ID
-    - name: Extract xUnit test results
-      shell: bash
-      run: |
-        TEST_CONTAINER_ID=$(docker create ${{ env.REPOSITORY }}:${{ github.sha }})
-        docker cp $TEST_CONTAINER_ID:/testresults/xunit ./xunit-test-results
-        docker rm $TEST_CONTAINER_ID
+        $id=docker images --filter "label=testresults=${{ github.run_id }}-${{ github.run_attempt }}" -q | Select-Object -First 1
+        docker create --name testcontainer $id
+        docker cp testcontainer:/testresults/xunit ./xunit-test-results
+        docker cp testcontainer:/testresults/jest ./jest-test-results
+        docker rm testcontainer
     - name: Publish Jest test results
       uses: actions/upload-artifact@v3
       with:

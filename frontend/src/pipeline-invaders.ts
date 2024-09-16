@@ -31,6 +31,11 @@ export function setFireRate(value: number) {
     fireRate = value;
 }
 
+// **Added setPlayerName function**
+export function setPlayerName(value: string | null) {
+    playerName = value;
+}
+
 // Player settings
 export const player = {
     x: canvas.width / 2 - 25,

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",  // Set to ES6 or later to support modern JavaScript features like Promises
-    "lib": ["es2015", "dom"],  // Include ES2015 for Promises and DOM for browser APIs
+    "lib": ["es6", "dom"],  // Include ES2015 for Promises and DOM for browser APIs
     "outDir": "./dist",         // Directory for the compiled output
     "rootDir": "./src",         // Root directory for input files
     "strict": true,             // Enable strict type checking

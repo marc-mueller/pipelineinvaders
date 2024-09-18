@@ -16,7 +16,7 @@
     "forwardPorts": [5000, 5001],
   
     // Run these commands after the container is created
-    "postCreateCommand": "npm install && dotnet restore",
+    "postCreateCommand": "npm install --prefix frontend && dotnet restore",
   
     // Settings for VSCode specific to your development environment
     "customizations": {

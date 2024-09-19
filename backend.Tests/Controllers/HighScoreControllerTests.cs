@@ -94,5 +94,92 @@ namespace backend.Tests.Controllers
                 Assert.Equal("Invalid highscore entry", badRequestResult.Value);
             }
         }
+
+        [Fact]
+        public async Task GetTop10ByDay_ReturnsHighScores()
+        {
+            // Arrange
+            using (var context = new HighScoreDbContext(_dbContextOptions))
+            {
+                context.HighScores.AddRange(
+                    new HighScoreEntry { PlayerName = "Player1", Score = 100, DateAchieved = System.DateTime.Today },
+                    new HighScoreEntry { PlayerName = "Player2", Score = 200, DateAchieved = System.DateTime.Today },
+                    new HighScoreEntry { PlayerName = "Player3", Score = 300, DateAchieved = System.DateTime.Today.AddDays(-1) }
+                );
+                context.SaveChanges();
+            }
+
+            using (var context = new HighScoreDbContext(_dbContextOptions))
+            {
+                var controller = new HighScoreController(_loggerMock.Object, context);
+
+                // Act
+                var result = await controller.GetTop10ByDay();
+
+                // Assert
+                var okResult = Assert.IsType<OkObjectResult>(result.Result);
+                var highScores = Assert.IsAssignableFrom<IEnumerable<HighScoreEntryDto>>(okResult.Value);
+                Assert.Equal(2, highScores.Count());
+                Assert.Equal("Player2", highScores.First().PlayerName); // Highest score first
+            }
+        }
+
+        [Fact]
+        public async Task GetTop10ByWeek_ReturnsHighScores()
+        {
+            // Arrange
+            using (var context = new HighScoreDbContext(_dbContextOptions))
+            {
+                context.HighScores.AddRange(
+                    new HighScoreEntry { PlayerName = "Player1", Score = 100, DateAchieved = System.DateTime.Today },
+                    new HighScoreEntry { PlayerName = "Player2", Score = 200, DateAchieved = System.DateTime.Today.AddDays(-3) },
+                    new HighScoreEntry { PlayerName = "Player3", Score = 300, DateAchieved = System.DateTime.Today.AddDays(-10) }
+                );
+                context.SaveChanges();
+            }
+
+            using (var context = new HighScoreDbContext(_dbContextOptions))
+            {
+                var controller = new HighScoreController(_loggerMock.Object, context);
+
+                // Act
+                var result = await controller.GetTop10ByWeek();
+
+                // Assert
+                var okResult = Assert.IsType<OkObjectResult>(result.Result);
+                var highScores = Assert.IsAssignableFrom<IEnumerable<HighScoreEntryDto>>(okResult.Value);
+                Assert.Equal(2, highScores.Count());
+                Assert.Equal("Player2", highScores.First().PlayerName); // Highest score first
+            }
+        }
+
+        [Fact]
+        public async Task GetTop10ByMonth_ReturnsHighScores()
+        {
+            // Arrange
+            using (var context = new HighScoreDbContext(_dbContextOptions))
+            {
+                context.HighScores.AddRange(
+                    new HighScoreEntry { PlayerName = "Player1", Score = 100, DateAchieved = System.DateTime.Today },
+                    new HighScoreEntry { PlayerName = "Player2", Score = 200, DateAchieved = System.DateTime.Today.AddDays(-10) },
+                    new HighScoreEntry { PlayerName = "Player3", Score = 300, DateAchieved = System.DateTime.Today.AddMonths(-1) }
+                );
+                context.SaveChanges();
+            }
+
+            using (var context = new HighScoreDbContext(_dbContextOptions))
+            {
+                var controller = new HighScoreController(_loggerMock.Object, context);
+
+                // Act
+                var result = await controller.GetTop10ByMonth();
+
+                // Assert
+                var okResult = Assert.IsType<OkObjectResult>(result.Result);
+                var highScores = Assert.IsAssignableFrom<IEnumerable<HighScoreEntryDto>>(okResult.Value);
+                Assert.Equal(2, highScores.Count());
+                Assert.Equal("Player2", highScores.First().PlayerName); // Highest score first
+            }
+        }
     }
 }

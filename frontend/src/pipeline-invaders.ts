@@ -345,15 +345,25 @@ export async function fetchHighScores() {
         const highScores = await response.json();
         const highscoreList = document.getElementById('highscoreList')!;
         highscoreList.innerHTML = '';
-        highScores.forEach((score: { playerName: string, score: number }) => {
+
+        highScores.forEach((score: { playerName: string; score: number; dateAchieved: string }) => {
             const li = document.createElement('li');
-            li.textContent = `${score.playerName}: ${score.score}`;
+
+            // Parse the date string into a Date object
+            const date = new Date(score.dateAchieved);
+
+            // Format the date according to the browser's locale
+            const formattedDate = date.toLocaleString();
+
+            // Update the list item content to include the date
+            li.textContent = `${score.playerName}: ${score.score} (${formattedDate})`;
             highscoreList.appendChild(li);
         });
     } catch (error) {
         console.error('Error fetching high scores:', error);
     }
 }
+
 
 // Event listener for "View Highscores" link
 document.getElementById('viewHighscores')?.addEventListener('click', (e) => {

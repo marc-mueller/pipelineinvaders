@@ -416,5 +416,15 @@ export function hideRestartButton() {
     }
 }
 
+// Event listener for "View Highscores" link
+document.getElementById('viewHighscores')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openHighscoreDialog();
+});
+
+// Add event listeners to buttons
+document.getElementById('restartButton')?.addEventListener('click', resetGame);
+document.getElementById('closeHighscoreDialogButton')?.addEventListener('click', closeHighscoreDialog);
+
 // Start the game loop
 requestAnimationFrame(gameLoop);

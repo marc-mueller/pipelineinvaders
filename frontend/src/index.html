@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pipeline Invaders</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -16,15 +15,15 @@
         </div>
 
         <!-- Restart Game Button -->
-        <button id="restartButton" style="display: none;" onclick="resetGame()">Restart Game</button>
+        <button id="restartButton" style="display: none;">Restart Game</button>
 
         <!-- Highscore Dialog -->
         <div id="highscoreDialog" class="dialog" style="display: none;">
             <h2>High Scores</h2>
             <ul id="highscoreList"></ul>
-            <button onclick="closeHighscoreDialog()">Close</button>
+            <button id="closeHighscoreDialogButton">Close</button>
         </div>
     </div>
-    <script src="pipeline-invaders.js" type="module""></script>
+    <script src="pipeline-invaders.js" type="module"></script>
 </body>
 </html>

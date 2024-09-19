@@ -42,6 +42,8 @@ public class HighScoreController : ControllerBase
             return BadRequest("Invalid highscore entry");
         }
 
+        highScoreEntryDto.DateAchieved = DateTime.UtcNow;
+
         var highScoreEntry = HighScoreEntryMapper.FromDto(highScoreEntryDto);
 
         _context.HighScores.Add(highScoreEntry);

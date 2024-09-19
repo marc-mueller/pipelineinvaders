@@ -44,6 +44,8 @@ public class HighScoreController : ControllerBase
 
         var highScoreEntry = HighScoreEntryMapper.FromDto(highScoreEntryDto);
 
+        highScoreEntry.DateAchieved = DateTime.Now;
+
         _context.HighScores.Add(highScoreEntry);
         await _context.SaveChangesAsync();
 

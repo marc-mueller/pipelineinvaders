@@ -91,21 +91,22 @@ The game is implemented in **TypeScript** and rendered using the **HTML5 Canvas 
 ## File Structure
 
 ```
-/src
-  ├── /img
-  │     ├── bug.svg
-  │     ├── vulnerability.svg
-  │     ├── misconfiguration.svg
-  │     ├── githubactions.svg
-  │     ├── githubcopilot.svg
-  │     ├── githubadvancedsecurity.svg
-  │     ├── kubernetes.svg
-  │     ├── player.svg
-  ├── index.html
-  ├── style.css
-  ├── pipeline-invaders.ts
-/tsconfig.json
-/package.json
+/frontend
+  ├── /src
+  ├     ├── /img
+  ├     │     ├── bug.svg
+  ├     │     ├── vulnerability.svg
+  ├     │     ├── misconfiguration.svg
+  ├     │     ├── githubactions.svg
+  ├     │     ├── githubcopilot.svg
+  ├     │     ├── githubadvancedsecurity.svg
+  ├     │     ├── kubernetes.svg
+  ├     │     ├── player.svg
+  ├     ├── index.html
+  ├     ├── style.css
+  ├     ├── pipeline-invaders.ts
+  ├── tsconfig.json
+  ├── package.json
 ```
 
 ## HTML (index.html)

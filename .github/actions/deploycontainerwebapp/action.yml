@@ -33,7 +33,7 @@ runs:
   using: "composite"
   steps:
     - name: Login for az cli commands 
-      uses: azure/login@v1
+      uses: azure/login@v2
       with:
         creds: ${{ inputs.azureCredentials }}
 

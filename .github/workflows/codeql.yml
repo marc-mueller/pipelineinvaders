@@ -62,14 +62,22 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
+    # Initialize CodeQL for C#
+    - name: Initialize CodeQL for C#
+      if: matrix.language == 'csharp'
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
-        # Conditionally include the custom query for C# scans only
-        queries: ${{ matrix.language == 'csharp' && '+./.github/codeql-queries/SecureApiControllersWithoutAuthorize.ql' || '' }}
+        queries: '+./.github/codeql-queries/SecureApiControllersWithoutAuthorize.ql'
+
+    # Initialize CodeQL for other languages
+    - name: Initialize CodeQL for Other Languages
+      if: matrix.language != 'csharp'
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
 
     # If the analyze step fails for one of the languages you are analyzing with
     # "We were unable to automatically build your code", modify the matrix above

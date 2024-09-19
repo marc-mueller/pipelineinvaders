@@ -1,44 +1,35 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
-	"name": "Node.js & .NET 8 SDK",
+    "name": "Node.js & .NET 8 SDK",
   
-	// Use a Dockerfile to customize the container
-	"build": {
-	  "dockerfile": "Dockerfile",
-	  "context": "."
-	},
+    // Features to add to the dev container. 
+    // Adds Node.js and .NET 8 SDK.
+    "features": {
+        "ghcr.io/devcontainers/features/dotnet:2": {
+            "version": "8.0"
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "20"
+        }
+    },
   
-	// Features to add to the dev container. 
-	// Adds Node.js and .NET 8 SDK.
-	"features": {
-	  "ghcr.io/devcontainers/features/dotnet:2": {
-		"version": "8.0"
-	  },
-	  "ghcr.io/devcontainers/features/node:1": {
-		"version": "20"
-	  }
-	},
+    // Forward necessary ports for ASP.NET and Node.js development
+    "forwardPorts": [5000, 5001],
   
-	// Forward necessary ports for ASP.NET and Node.js development
-	"forwardPorts": [5500, 5000, 5001],
+    // Run these commands after the container is created
+    "postCreateCommand": "npm install --prefix frontend && dotnet restore",
   
-	// Run these commands after the container is created
-	"postCreateCommand": "npm install && dotnet restore",
+    // Settings for VSCode specific to your development environment
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-dotnettools.csharp", // C# extension for ASP.NET Core development
+                "dbaeumer.vscode-eslint", // ESLint extension for TypeScript
+                "esbenp.prettier-vscode", // Prettier extension for formatting
+                "ms-vscode.vscode-typescript-next" // TypeScript extension for front-end dev
+            ]
+        }
+    }
   
-	// Settings for VSCode specific to your development environment
-	"customizations": {
-	  "vscode": {
-		"extensions": [
-		  "ms-dotnettools.csharp", // C# extension for ASP.NET Core development
-		  "dbaeumer.vscode-eslint", // ESLint extension for TypeScript
-		  "esbenp.prettier-vscode", // Prettier extension for formatting
-		  "ms-vscode.vscode-typescript-next" // TypeScript extension for front-end dev
-		]
-	  }
-	}
-  
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
-  }
-  
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "root"
+}

@@ -21,14 +21,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Build the web app
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/buildcontainerwebapp
         with:
           registryUsername: ${{ github.actor }}
           registryPassword: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ env.REPOSITORY }}
           tag: ${{ github.sha }}
-      
+
   deploy-pr:
     runs-on: ubuntu-latest
     name: Deploy to PR Slot
@@ -38,7 +38,7 @@ jobs:
       name: pull-request
       url:  ${{ steps.deploywebapp.webAppUrl }}
     steps:
-      - uses: actions/checkout@master # only needed because action is in same repo
+      - uses: actions/checkout@v4 # only needed because action is in same repo
       - uses: ./.github/actions/deploycontainerwebapp
         with:
           repository: ${{ env.REPOSITORY }}
@@ -60,7 +60,7 @@ jobs:
       name: testing
       url:  ${{ steps.deploywebapp.outputs.webAppUrl }}
     steps:
-      - uses: actions/checkout@master # only needed because action is in same repo
+      - uses: actions/checkout@v4 # only needed because action is in same repo
       - uses: ./.github/actions/deploycontainerwebapp
         with:
           repository: ${{ env.REPOSITORY }}
@@ -80,7 +80,7 @@ jobs:
       name: production
       url:  ${{ steps.deploywebapp.outputs.webAppUrl }}
     steps:
-      - uses: actions/checkout@master # only needed because action is in same repo
+      - uses: actions/checkout@v4 # only needed because action is in same repo
       - uses: ./.github/actions/deploycontainerwebapp
         with:
           repository: ${{ env.REPOSITORY }}
@@ -98,7 +98,7 @@ jobs:
     name: Cleanup pull request
     steps:
       - name: Login for az cli commands 
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -106,4 +106,3 @@ jobs:
         shell: pwsh
         run: |
           az webapp deployment slot delete --resource-group ${{ secrets.AZURE_RG }} --name ${{ env.AZURE_WEBAPP_NAME }}-webapp --slot pr-${{github.event.number}}
-          

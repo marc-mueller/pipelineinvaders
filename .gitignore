@@ -400,4 +400,4 @@ FodyWeavers.xsd
 dist/
 node_modules/
 backend/wwwroot/*
-frontend/coverage*
+frontend/coverage/*

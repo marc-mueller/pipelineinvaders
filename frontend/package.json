@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.13",
-    "@types/node-fetch": "^2.6.11",
+    "@types/node-fetch": "^2.6.12",
     "cpy-cli": "^5.0.0",
     "expect": "^29.7.0",
     "http-server": "^14.1.1",

@@ -52,7 +52,9 @@ jobs:
           slotname: pr-${{github.event.number}}
           environmentname: 'pull-request'
           createSlot: true
-          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          azureClientId: ${{ secrets.AZURE_CLIENT_ID }}
+          azureTenantId: ${{ secrets.AZURE_TENANT_ID }}
+          azureSubscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azureResourceGroup: ${{ secrets.AZURE_RG }}
         id: deploywebapp
 

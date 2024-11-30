@@ -20,7 +20,7 @@ on:
     - cron: '42 8 * * 3'
 
 env:
-  DOTNET_VERSION: '8.0.x'
+  DOTNET_VERSION: '9.0.x'
 
 jobs:
   analyze:

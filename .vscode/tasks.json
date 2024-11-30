@@ -24,7 +24,10 @@
           "reveal": "always",
           "panel": "shared"
         },
-        "problemMatcher": []
+        "problemMatcher": [],
+        "options": {
+          "cwd": "${workspaceFolder}/frontend"
+        }
       },
       {
         "label": "npm install",

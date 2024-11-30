@@ -19,8 +19,14 @@ inputs:
   createSlot:
     description: "Should a slot be created?"
     default: "false"
-  azureCredentials:
-    description: "Azure credetials"
+  azureClientId:
+    description: "Azure client id"
+    required: true
+  azureTenantId:
+    description: "Azure tenant id"
+    required: true
+  azureSubscriptionId:
+    description: "Azure subscription id"
     required: true
   azureResourceGroup:
     description: "Target azure resource group"
@@ -35,7 +41,9 @@ runs:
     - name: Login for az cli commands 
       uses: azure/login@v2
       with:
-        creds: ${{ inputs.azureCredentials }}
+        client-id: ${{ inputs.azureClientId }}
+        tenant-id: ${{ inputs.azureTenantId }}
+        subscription-id: ${{ inputs.azureSubscriptionId }}
 
     - name: Create Pull-Request slot
       shell: pwsh

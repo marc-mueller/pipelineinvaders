@@ -75,7 +75,9 @@ jobs:
           webappname: ${{ env.AZURE_WEBAPP_NAME }}
           slotname: 'testing'
           environmentname: 'testing'
-          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          azureClientId: ${{ secrets.AZURE_CLIENT_ID }}
+          azureTenantId: ${{ secrets.AZURE_TENANT_ID }}
+          azureSubscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azureResourceGroup: ${{ secrets.AZURE_RG }}
         id: deploywebapp
           
@@ -95,7 +97,9 @@ jobs:
           webappname: ${{ env.AZURE_WEBAPP_NAME }}
           slotname: 'production'
           environmentname: 'production'
-          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          azureClientId: ${{ secrets.AZURE_CLIENT_ID }}
+          azureTenantId: ${{ secrets.AZURE_TENANT_ID }}
+          azureSubscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azureResourceGroup: ${{ secrets.AZURE_RG }}
         id: deploywebapp
           

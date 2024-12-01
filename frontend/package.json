@@ -9,6 +9,9 @@
     "copy-to-backend": "cpy \"dist/**/*\" ../backend/wwwroot/",
     "test": "jest"
   },
+  "dependencies": {
+    "lodash": "4.17.20"
+  },
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "@types/node-fetch": "^2.6.12",

@@ -6,7 +6,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build-backend",
-      "program": "${workspaceFolder}/backend/bin/Debug/net8.0/backend.dll",
+      "program": "${workspaceFolder}/backend/bin/Debug/net9.0/backend.dll",
       "args": [],
       "cwd": "${workspaceFolder}/backend",
       "stopAtEntry": false,
@@ -16,7 +16,7 @@
         "action": "openExternally"
       },
       "launchBrowser": {
-        "enabled": true,
+        "enabled": false,
         "args": "${auto-detect-url}",
         "windows": {
           "command": "cmd.exe",
@@ -30,7 +30,8 @@
         }
       },
       "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5000"
       },
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"
@@ -38,16 +39,21 @@
       "justMyCode": true
     },
     {
-      "name": "Launch Frontend (TypeScript)",
-      "type": "node",
+      "name": "Debug Frontend (Browser)",
+      "type": "node-terminal",
       "request": "launch",
-      "preLaunchTask": "build-frontend",
-      "program": "${workspaceFolder}/frontend/dist/app.js", // Adjust if your entry point changes
+      "command": "npm run start",
       "cwd": "${workspaceFolder}/frontend",
-      "outFiles": ["${workspaceFolder}/frontend/dist/**/*.js"],
-      "restart": true,
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "preLaunchTask": "build-frontend",
+      "serverReadyAction": {
+        "pattern": "Available on: (http://\\S+)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      }
     }
   ]
 }

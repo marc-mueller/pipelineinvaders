@@ -3,19 +3,41 @@
 // Game settings
 const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
-let score = 0;
-let serverHealth = 100;
-let isGameOver = false;
-let fireRate = 500; // Milliseconds between shots
+export let score = 0;
+export let serverHealth = 100;
+export let isGameOver = false;
+export let fireRate = 500; // Milliseconds between shots
 let lastShot = 0;
 let enemySpeed = 1;
 let powerUpActive = false;
 let powerUpDuration = 5000; // 5 seconds
 let powerUpEndTime = 0;
-let playerName = localStorage.getItem('playerName') || null; // Retrieve player name from localStorage if it exists
+export let playerName = localStorage.getItem('playerName') || null; // Retrieve player name from localStorage if it exists
+
+// Setter functions for testing
+export function setScore(value: number) {
+    score = value;
+}
+
+export function setServerHealth(value: number) {
+    serverHealth = value;
+}
+
+export function setIsGameOver(value: boolean) {
+    isGameOver = value;
+}
+
+export function setFireRate(value: number) {
+    fireRate = value;
+}
+
+// **Added setPlayerName function**
+export function setPlayerName(value: string | null) {
+    playerName = value;
+}
 
 // Player settings
-const player = {
+export const player = {
     x: canvas.width / 2 - 25,
     y: canvas.height - 60,
     width: 50,
@@ -29,13 +51,13 @@ const player = {
 player.img.src = "img/player.svg";
 
 // Bullets
-const bullets: { x: number, y: number, width: number, height: number }[] = [];
+export const bullets: { x: number, y: number, width: number, height: number }[] = [];
 
 // Enemies (Bugs, Vulnerabilities, Misconfigurations)
-const enemies: { x: number, y: number, width: number, height: number, type: string }[] = [];
+export const enemies: { x: number, y: number, width: number, height: number, type: string }[] = [];
 
 // Power-ups
-const powerUps: { x: number, y: number, width: number, height: number, type: string }[] = [];
+export const powerUps: { x: number, y: number, width: number, height: number, type: string }[] = [];
 
 // Key press event listeners
 const keys: { [key: string]: boolean } = {};
@@ -84,7 +106,7 @@ const powerUpEffects = {
 };
 
 // Main game loop
-function gameLoop(timestamp: number) {
+export function gameLoop(timestamp: number) {
     if (isGameOver) return;
 
     // Clear the canvas
@@ -137,7 +159,7 @@ function drawTintedImage(img: HTMLImageElement, x: number, y: number, width: num
 }
 
 // Shooting function
-function shoot(timestamp: number) {
+export function shoot(timestamp: number) {
     if (timestamp - lastShot > fireRate) {
         bullets.push({ x: player.x + player.width / 2 - 5, y: player.y - 10, width: 5, height: 10 });
         lastShot = timestamp;
@@ -145,7 +167,7 @@ function shoot(timestamp: number) {
 }
 
 // Update bullets
-function updateBullets() {
+export function updateBullets() {
     bullets.forEach((bullet, index) => {
         bullet.y -= 5;
         if (bullet.y < 0) {
@@ -158,7 +180,7 @@ function updateBullets() {
 }
 
 // Generate random enemies
-function generateEnemies() {
+export function generateEnemies() {
     if (Math.random() < 0.02) {
         const enemyTypes = ["bug", "vulnerability", "misconfiguration"];
         const randomType = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
@@ -173,7 +195,7 @@ function generateEnemies() {
 }
 
 // Update enemies
-function updateEnemies() {
+export function updateEnemies() {
     generateEnemies();
     enemies.forEach((enemy, index) => {
         enemy.y += enemySpeed;
@@ -202,13 +224,13 @@ function updateEnemies() {
 }
 
 // Check for collisions
-function checkCollision(bullet: any, enemy: any): boolean {
+export function checkCollision(bullet: any, enemy: any): boolean {
     return bullet.x < enemy.x + enemy.width && bullet.x + bullet.width > enemy.x &&
         bullet.y < enemy.y + enemy.height && bullet.y + bullet.height > enemy.y;
 }
 
 // Drop power-ups randomly when an enemy is destroyed
-function dropPowerUp(x: number, y: number) {
+export function dropPowerUp(x: number, y: number) {
     if (Math.random() < 0.2) {
         const powerUpTypes = ["githubActions", "githubCopilot", "githubAdvancedSecurity", "kubernetes"];
         const randomPowerUp = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
@@ -217,7 +239,7 @@ function dropPowerUp(x: number, y: number) {
 }
 
 // Update power-ups
-function updatePowerUps() {
+export function updatePowerUps() {
     powerUps.forEach((powerUp, index) => {
         powerUp.y += 2;
         if (powerUp.y > canvas.height) {
@@ -237,21 +259,21 @@ function updatePowerUps() {
 }
 
 // Activate power-up
-function activatePowerUp(type: string) {
+export function activatePowerUp(type: string) {
     powerUpActive = true;
     powerUpEndTime = Date.now() + powerUpDuration;
     eval(`(${(powerUpEffects as Record<string, () => void>)[type]})()`);
 }
 
 // Reset power-up effects
-function resetPowerUp() {
+export function resetPowerUp() {
     powerUpActive = false;
     fireRate = 500;
     player.speed = 7;
 }
 
 // Auto-shoot (GitHub Copilot)
-function autoShoot() {
+export function autoShoot() {
     const autoFireInterval = setInterval(() => {
         bullets.push({ x: player.x + player.width / 2 - 5, y: player.y - 10, width: 5, height: 10 });
     }, fireRate);
@@ -259,7 +281,7 @@ function autoShoot() {
 }
 
 // Display power-up messages
-function displayMessage(message: string) {
+export function displayMessage(message: string) {
     const msgDiv = document.createElement('div');
     msgDiv.innerHTML = message; // Potential XSS if `message` contains malicious code
     msgDiv.style.position = 'absolute';
@@ -273,13 +295,13 @@ function displayMessage(message: string) {
 }
 
 // Update scoreboard
-function updateScoreboard() {
+export function updateScoreboard() {
     document.getElementById('score')!.textContent = score.toString();
     document.getElementById('serverHealth')!.textContent = serverHealth.toString();
 }
 
 // Game over function
-function gameOver() {
+export function gameOver() {
     isGameOver = true;
     promptPlayerName();
     postHighScore(playerName!, score);
@@ -289,7 +311,7 @@ function gameOver() {
 }
 
 // Prompt the user for their name if not already entered
-function promptPlayerName() {
+export function promptPlayerName() {
     if (!playerName) {
         playerName = prompt('Enter your name for the highscore:');
         if (playerName) {
@@ -301,7 +323,7 @@ function promptPlayerName() {
 }
 
 // Post the player's high score to the API
-async function postHighScore(playerName: string, score: number) {
+export async function postHighScore(playerName: string, score: number) {
     const data = { playerName, score };
     try {
         await fetch('/api/highscore', {
@@ -317,7 +339,7 @@ async function postHighScore(playerName: string, score: number) {
 }
 
 // Fetch high scores from the API and display in dialog
-async function fetchHighScores() {
+export async function fetchHighScores() {
     try {
         const response = await fetch('/api/highscore');
         const highScores = await response.json();
@@ -340,13 +362,13 @@ document.getElementById('viewHighscores')?.addEventListener('click', (e) => {
 });
 
 // Function to open the highscore dialog
-function openHighscoreDialog() {
+export function openHighscoreDialog() {
     fetchHighScores();
     document.getElementById('highscoreDialog')!.style.display = 'block';
 }
 
 // Function to show the highscore dialog after game over
-function showHighscoreDialog() {
+export function showHighscoreDialog() {
     const highscoreDialog = document.getElementById('highscoreDialog');
     if (highscoreDialog) {
         highscoreDialog.style.display = 'block';
@@ -354,7 +376,7 @@ function showHighscoreDialog() {
 }
 
 // Function to close the highscore dialog
-function closeHighscoreDialog() {
+export function closeHighscoreDialog() {
     const highscoreDialog = document.getElementById('highscoreDialog');
     if (highscoreDialog) {
         highscoreDialog.style.display = 'none';
@@ -362,7 +384,7 @@ function closeHighscoreDialog() {
 }
 
 // Extend showRestartButton to display the high scores above the button
-function showRestartButton() {
+export function showRestartButton() {
     fetchHighScores();
     const restartButton = document.getElementById('restartButton');
     if (restartButton) {
@@ -371,7 +393,7 @@ function showRestartButton() {
 }
 
 // Reset game logic
-function resetGame() {
+export function resetGame() {
     score = 0;
     serverHealth = 100;
     isGameOver = false;
@@ -387,12 +409,22 @@ function resetGame() {
 }
 
 // Hide restart button
-function hideRestartButton() {
+export function hideRestartButton() {
     const restartButton = document.getElementById('restartButton');
     if (restartButton) {
         restartButton.style.display = 'none';
     }
 }
+
+// Event listener for "View Highscores" link
+document.getElementById('viewHighscores')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openHighscoreDialog();
+});
+
+// Add event listeners to buttons
+document.getElementById('restartButton')?.addEventListener('click', resetGame);
+document.getElementById('closeHighscoreDialogButton')?.addEventListener('click', closeHighscoreDialog);
 
 // Start the game loop
 requestAnimationFrame(gameLoop);

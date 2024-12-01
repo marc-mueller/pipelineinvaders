@@ -15,20 +15,25 @@ env:
   AZURE_WEBAPP_NAME: pipelineinvaders
   REPOSITORY: marc-mueller/pipelineinvaders
 
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
 jobs:
   build:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build the web app
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/buildcontainerwebapp
         with:
           registryUsername: ${{ github.actor }}
           registryPassword: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ env.REPOSITORY }}
           tag: ${{ github.sha }}
-      
+
   deploy-pr:
     runs-on: ubuntu-latest
     name: Deploy to PR Slot
@@ -38,7 +43,7 @@ jobs:
       name: pull-request
       url:  ${{ steps.deploywebapp.webAppUrl }}
     steps:
-      - uses: actions/checkout@master # only needed because action is in same repo
+      - uses: actions/checkout@v4 # only needed because action is in same repo
       - uses: ./.github/actions/deploycontainerwebapp
         with:
           repository: ${{ env.REPOSITORY }}
@@ -47,7 +52,9 @@ jobs:
           slotname: pr-${{github.event.number}}
           environmentname: 'pull-request'
           createSlot: true
-          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          azureClientId: ${{ secrets.AZURE_CLIENT_ID }}
+          azureTenantId: ${{ secrets.AZURE_TENANT_ID }}
+          azureSubscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azureResourceGroup: ${{ secrets.AZURE_RG }}
         id: deploywebapp
 
@@ -60,7 +67,7 @@ jobs:
       name: testing
       url:  ${{ steps.deploywebapp.outputs.webAppUrl }}
     steps:
-      - uses: actions/checkout@master # only needed because action is in same repo
+      - uses: actions/checkout@v4 # only needed because action is in same repo
       - uses: ./.github/actions/deploycontainerwebapp
         with:
           repository: ${{ env.REPOSITORY }}
@@ -68,7 +75,9 @@ jobs:
           webappname: ${{ env.AZURE_WEBAPP_NAME }}
           slotname: 'testing'
           environmentname: 'testing'
-          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          azureClientId: ${{ secrets.AZURE_CLIENT_ID }}
+          azureTenantId: ${{ secrets.AZURE_TENANT_ID }}
+          azureSubscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azureResourceGroup: ${{ secrets.AZURE_RG }}
         id: deploywebapp
           
@@ -80,7 +89,7 @@ jobs:
       name: production
       url:  ${{ steps.deploywebapp.outputs.webAppUrl }}
     steps:
-      - uses: actions/checkout@master # only needed because action is in same repo
+      - uses: actions/checkout@v4 # only needed because action is in same repo
       - uses: ./.github/actions/deploycontainerwebapp
         with:
           repository: ${{ env.REPOSITORY }}
@@ -88,7 +97,9 @@ jobs:
           webappname: ${{ env.AZURE_WEBAPP_NAME }}
           slotname: 'production'
           environmentname: 'production'
-          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+          azureClientId: ${{ secrets.AZURE_CLIENT_ID }}
+          azureTenantId: ${{ secrets.AZURE_TENANT_ID }}
+          azureSubscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azureResourceGroup: ${{ secrets.AZURE_RG }}
         id: deploywebapp
           
@@ -98,12 +109,13 @@ jobs:
     name: Cleanup pull request
     steps:
       - name: Login for az cli commands 
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Delete Pull-Request slot
         shell: pwsh
         run: |
           az webapp deployment slot delete --resource-group ${{ secrets.AZURE_RG }} --name ${{ env.AZURE_WEBAPP_NAME }}-webapp --slot pr-${{github.event.number}}
-          

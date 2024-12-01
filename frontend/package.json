@@ -6,14 +6,28 @@
     "build": "tsc && npm run copy-assets",
     "copy-assets": "cpy \"src/**/*.{html,css,svg}\" dist/",
     "start": "http-server ./dist -p 5500",
-    "copy-to-backend": "cpy \"dist/**/*\" ../backend/wwwroot/"
+    "copy-to-backend": "cpy \"dist/**/*\" ../backend/wwwroot/",
+    "test": "jest"
   },
   "dependencies": {
     "lodash": "4.17.20"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node-fetch": "^2.6.12",
     "cpy-cli": "^5.0.0",
+    "expect": "^29.7.0",
     "http-server": "^14.1.1",
-    "typescript": "^5.5.4"
+    "install": "^0.13.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "npm": "^10.9.1",
+    "pretty-format": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.7.2",
+    "undici": "^6.21.0"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
   }
 }

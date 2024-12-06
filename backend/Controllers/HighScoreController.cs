@@ -33,6 +33,54 @@ public class HighScoreController : ControllerBase
         return Ok(highScoreDtos);
     }
 
+    // GET api/highscore/top10byday
+    [HttpGet("top10byday")]
+    public async Task<ActionResult<IEnumerable<HighScoreEntryDto>>> GetTop10ByDay()
+    {
+        var today = DateTime.Today;
+        var highScores = await _context.HighScores
+            .Where(h => h.DateAchieved >= today)
+            .OrderByDescending(h => h.Score)
+            .Take(10)
+            .ToListAsync();
+
+        var highScoreDtos = highScores.Select(h => HighScoreEntryMapper.ToDto(h)).ToList();
+
+        return Ok(highScoreDtos);
+    }
+
+    // GET api/highscore/top10byweek
+    [HttpGet("top10byweek")]
+    public async Task<ActionResult<IEnumerable<HighScoreEntryDto>>> GetTop10ByWeek()
+    {
+        var startOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+        var highScores = await _context.HighScores
+            .Where(h => h.DateAchieved >= startOfWeek)
+            .OrderByDescending(h => h.Score)
+            .Take(10)
+            .ToListAsync();
+
+        var highScoreDtos = highScores.Select(h => HighScoreEntryMapper.ToDto(h)).ToList();
+
+        return Ok(highScoreDtos);
+    }
+
+    // GET api/highscore/top10bymonth
+    [HttpGet("top10bymonth")]
+    public async Task<ActionResult<IEnumerable<HighScoreEntryDto>>> GetTop10ByMonth()
+    {
+        var startOfMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+        var highScores = await _context.HighScores
+            .Where(h => h.DateAchieved >= startOfMonth)
+            .OrderByDescending(h => h.Score)
+            .Take(10)
+            .ToListAsync();
+
+        var highScoreDtos = highScores.Select(h => HighScoreEntryMapper.ToDto(h)).ToList();
+
+        return Ok(highScoreDtos);
+    }
+
     // POST api/highscore
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] HighScoreEntryDto highScoreEntryDto)

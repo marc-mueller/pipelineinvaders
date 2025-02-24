@@ -20,7 +20,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "npm": "^10.9.1",
     "pretty-format": "^29.7.0",
-    "ts-jest": "^29.2.5",
+    "ts-jest": "^29.2.6",
     "typescript": "^5.7.2",
     "undici": "^6.21.0"
   },
